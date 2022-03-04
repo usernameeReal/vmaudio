@@ -1,0 +1,63 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VMAudio by usernamee</title>
+    <script src="peerjs.min.js"></script>
+    <script src="minihri.js"></script>
+</head>
+<body><h1>VMAudio transmitter</h1>
+    <h1 id="idbox"><button onclick="init()">Click this to start</button></h1>
+    <script>
+        var idbox = document.getElementById("idbox");
+        function ee() {
+            //debugger
+            return "No"
+        }
+        var mediaStream;
+        function aaa(ok) {
+            if (navigator.userAgent.toLowerCase().includes("linux")) {
+                alert("On the next screen select 'Monitor of ???'");
+            } else if (navigator.userAgent.toLowerCase().includes("win")) {
+                alert("On the next screen select Virtual Audio cable, you can get it at https://vb-audio.com/Cable/");
+            }
+            navigator.getUserMedia({video:false,audio:true},(arg)=>{
+                console.log(arg);
+                mediaStream=arg;
+                ok && ok();
+            },(arg)=>{
+                console.error(arg);
+                alert("Failed to open audio: "+arg);
+            })
+        }
+        onbeforeunload=ee;
+        document.documentElement.addEventListener("beforeunload",ee);
+        var peer;
+        function init() {
+            idbox.innerHTML="Requesting audio access...";
+            aaa(()=>{
+                idbox.innerHTML="Connecting...";
+                var id = localStorage.getItem("staticId");
+                if (!id) {id=generateRandomId();localStorage.setItem("staticId",id)};
+                peer = new Peer(id); 
+                peer.on("open",()=>{
+                    idbox.innerHTML="My id is: "+peer.id;
+                })
+                peer.on("connection",(conn)=>{
+                    conn.on('data', function(data){
+                        // Will print 'hi!'
+                        console.log(data);
+                    });
+                })
+                peer.on('call', function(callObj) {
+                    console.log(callObj,mediaStream);
+                    callObj.answer && callObj.answer(mediaStream);
+                })
+            })
+        }
+//var peer = new Peer(); 
+
+    </script>
+</body>
+</html>

@@ -1,0 +1,80 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VMAudio by usernamee</title>
+    <script src="peerjs.min.js"></script>
+
+</head>
+<body>
+    <h1>VMAudio receiver</h1>
+    <h2 id="init_screen">Enter an id: <input id="idbox"><button onclick="init()">go</button></h2>
+    <h2 id="disconnected" style="display: none;">disconnected</h2>
+    <h2 id="loading" style="display: none;">Loading...</h2>
+    <h2 id="peerclosed" style="display: none;">Peer closed, please <span onclick="location.reload()" style="cursor: pointer;">reload!</span></h2>
+    <h2 id="connected" style="display: none;">Connected!</h2>
+
+    <script>
+        var idbox = document.getElementById("idbox");
+        var init_screen = document.getElementById("init_screen");
+        var connected = document.getElementById("connected");
+        var loading = document.getElementById("loading");
+        idbox.value=localStorage.lastConn ? localStorage.lastConn : idbox.value;
+        var peer,conn;
+        function connOpened() {
+            loading.style.display="none";
+            connected.style.display="";
+            localStorage.setItem("lastConn",idbox.value);
+            const audioCtx = new AudioContext();//https://github.com/peers/peerjs/issues/158
+            const dest = audioCtx.createMediaStreamDestination();
+            console.log(dest.stream)
+            var call = peer.call(idbox.value,dest.stream);
+            //debugger;
+            window.call_=call;
+            call.on("stream",(ms)=>{
+                console.log(ms)
+                window.ms_=ms;
+                var vid = document.createElement("video");
+                document.body.appendChild(vid)
+                vid.controls=true;
+                vid.srcObject=ms;
+                vid.play();
+            })
+            call.on("error",(e)=>console.error(e));
+        }
+        function connClose() {
+            
+            init_screen.style.display=disconnected.style.display="";
+            document.querySelector("video").remove();
+            connected.style.display="none";
+        
+        }
+        function init() {
+            if (!peer) {peer = new Peer();
+            peer.on("open",()=>{
+                conn=peer.connect(idbox.value);
+                conn.on("open",connOpened);
+                conn.on("close",connClose);
+                conn.on("error",connClose);
+
+            })
+            peer.on("close",()=>{
+                document.querySelectorAll("h2").forEach(x=>x.style.display="none");
+                peerclosed.style.display="block";
+            })
+            } else {
+                conn=peer.connect(idbox.value);
+                conn.on("open",connOpened);
+                conn.on("close",connClose);
+                conn.on("error",connClose);
+
+
+            }
+            init_screen.style.display="none";
+            loading.style.display="";
+            disconnected.style.display="none";
+        }
+    </script>
+</body>
+</html>
