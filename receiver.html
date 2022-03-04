@@ -39,7 +39,7 @@
                 document.body.appendChild(vid)
                 vid.controls=true;
                 vid.srcObject=ms;
-                vid.play();
+                vid.play().catch(x=>alert("play failed, try manually starting"));
             })
             call.on("error",(e)=>console.error(e));
         }
@@ -74,6 +74,10 @@
             init_screen.style.display="none";
             loading.style.display="";
             disconnected.style.display="none";
+        }
+        if (location.hash) {
+            idbox.value=location.hash.substring(1);
+            init();
         }
     </script>
 </body>
