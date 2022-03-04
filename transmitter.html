@@ -9,8 +9,11 @@
 </head>
 <body><h1>VMAudio transmitter</h1>
     <h1 id="idbox"><button onclick="init()">Click this to start</button></h1>
+    <h1 id="idbox2">Press the button!</h1>
     <script>
         var idbox = document.getElementById("idbox");
+        var idbox2 = document.getElementById("idbox2");
+
         function ee() {
             //debugger
             return "No"
@@ -43,6 +46,7 @@
                 peer = new Peer(id); 
                 peer.on("open",()=>{
                     idbox.innerHTML="My id is: "+peer.id;
+                    idbox2.innerHTML="Visit this to hear the audio: https://"+location.host+location.pathname+"#"+peer.id;
                 })
                 peer.on("connection",(conn)=>{
                     conn.on('data', function(data){
