@@ -46,7 +46,7 @@
                 peer = new Peer(id); 
                 peer.on("open",()=>{
                     idbox.innerHTML="My id is: "+peer.id;
-                    idbox2.innerHTML="Visit this to hear the audio: https://"+location.host+location.pathname+"#"+peer.id;
+                    idbox2.innerHTML="Visit this to hear the audio: https://"+location.host+(location.pathname.replace("transmitter","receiver"))+"#"+peer.id;
                 })
                 peer.on("connection",(conn)=>{
                     conn.on('data', function(data){
