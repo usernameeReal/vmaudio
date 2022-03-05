@@ -20,10 +20,12 @@
         }
         var mediaStream;
         function aaa(ok) {
-            if (navigator.userAgent.toLowerCase().includes("linux")) {
-                alert("On the next screen select 'Monitor of ???'");
-            } else if (navigator.userAgent.toLowerCase().includes("win")) {
-                alert("On the next screen select Virtual Audio cable, you can get it at https://vb-audio.com/Cable/");
+            if (location.search!='?np') {
+                if (navigator.userAgent.toLowerCase().includes("linux")) {
+                    alert("On the next screen select 'Monitor of ???'");
+                } else if (navigator.userAgent.toLowerCase().includes("win")) {
+                    alert("On the next screen select Virtual Audio cable, you can get it at https://vb-audio.com/Cable/");
+                }
             }
             navigator.getUserMedia({video:false,audio:true},(arg)=>{
                 console.log(arg);
