@@ -79,6 +79,9 @@
             idbox.value=location.hash.substring(1);
             document.querySelector("button").innerHTML='go <b style="color:red">(click this)</b>'
         }
+        if (location.search.includes('autoplay')) {
+            init();
+        }
     </script>
 </body>
 </html>
